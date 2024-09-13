@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import { Tilt } from "react-tilt"; // Import Tilt
@@ -16,8 +16,23 @@ const Contact = () => {
     email: "",
     message: "",
   });
-
   const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [fieldErrors, setFieldErrors] = useState({
+    name: false,
+    email: false,
+    message: false,
+  });
+
+  // Check if all fields are filled
+  useEffect(() => {
+    if (form.name && form.email && form.message) {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
+    }
+  }, [form]);
 
   const handleChange = (e) => {
     const { target } = e;
@@ -27,14 +42,37 @@ const Contact = () => {
       ...form,
       [name]: value,
     });
+
+    // Clear the error for the field if it's being corrected
+    if (value) {
+      setFieldErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: false,
+      }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check for empty fields and set error states
+    const errors = {
+      name: !form.name,
+      email: !form.email,
+      message: !form.message,
+    };
+
+    setFieldErrors(errors);
+
+    // If any field is empty, return without sending the email
+    if (Object.values(errors).some((error) => error)) {
+      return;
+    }
+
     setLoading(true);
 
-    emailjs
-      .send(
+    try {
+      await emailjs.send(
         import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
         {
@@ -45,25 +83,23 @@ const Contact = () => {
           message: form.message,
         },
         import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
-      )
-      .then(
-        () => {
-          setLoading(false);
-          alert("Thank you. I will get back to you as soon as possible.");
-
-          setForm({
-            name: "",
-            email: "",
-            message: "",
-          });
-        },
-        (error) => {
-          setLoading(false);
-          console.error(error);
-
-          alert("Ahh, something went wrong. Please try again.");
-        }
       );
+
+      setAlertMessage("Thank you. I will get back to you as soon as possible.");
+      setTimeout(() => setAlertMessage(""), 3000); // Auto-dismiss alert after 2 seconds
+
+      setForm({
+        name: "",
+        email: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error(error);
+      setAlertMessage("Ahh, something went wrong. Please try again.");
+      setTimeout(() => setAlertMessage(""), 2000); // Auto-dismiss alert after 2 seconds
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -83,24 +119,32 @@ const Contact = () => {
           <label className="flex flex-col">
             <span className="text-white font-medium mb-4">Your Name</span>
             <input
+              required
               type="text"
               name="name"
               value={form.name}
               onChange={handleChange}
               placeholder="What's your good name?"
-              className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              className={`bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border ${
+                fieldErrors.name ? "border-red-500" : "border-none"
+              } font-medium`}
             />
+            {fieldErrors.name && <span className="text-red-500 mt-2">This field is required</span>}
           </label>
           <label className="flex flex-col">
-            <span className="text-white font-medium mb-4">Your email</span>
+            <span className="text-white font-medium mb-4">Your Email</span>
             <input
               type="email"
               name="email"
               value={form.email}
               onChange={handleChange}
               placeholder="What's your web address?"
-              className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              className={`bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border ${
+                fieldErrors.email ? "border-red-500" : "border-none"
+              } font-medium`}
+              required
             />
+            {fieldErrors.email && <span className="text-red-500 mt-2">This field is required</span>}
           </label>
           <label className="flex flex-col">
             <span className="text-white font-medium mb-4">Your Message</span>
@@ -110,14 +154,19 @@ const Contact = () => {
               value={form.message}
               onChange={handleChange}
               placeholder="What you want to say?"
-              className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              className={`bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border ${
+                fieldErrors.message ? "border-red-500" : "border-none"
+              } font-medium`}
+              required
             />
+            {fieldErrors.message && <span className="text-red-500 mt-2">This field is required</span>}
           </label>
 
           <div className="flex space-x-4">
             <button
               type="submit"
-              className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary"
+              className="bg-tertiary py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary cursor-pointer"
+              disabled={isButtonDisabled}
             >
               {loading ? "Sending..." : "Send"}
             </button>
@@ -131,6 +180,12 @@ const Contact = () => {
             </a>
           </div>
         </form>
+
+        {alertMessage.length && (
+          <div className="mt-4 p-4 bg-[#350295] text-white rounded-lg">
+            {alertMessage}
+          </div>
+        )}
       </motion.div>
 
       <motion.div
