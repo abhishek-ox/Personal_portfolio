@@ -1,4 +1,5 @@
-![Project Screenshot](./preview.png)
+![Project Screenshot](preview.png)
+
 
 
 # React + Vite
