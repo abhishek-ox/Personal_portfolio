@@ -52,7 +52,7 @@ An app that suggests meals based on user preferences and dietary restrictions.
 To view my portfolio:
 
 1. Clone the repository:
-   git clone https://github.com/yourusername/personal-portfolio.git
+   git clone https://github.com/abhishekbandil/personal-portfolio.git
 
 2. Navigate to the project directory:
   
