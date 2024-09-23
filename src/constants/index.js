@@ -20,6 +20,7 @@ import Whackgame from "../assets/Whackgame.jpeg";
 import memory from "../assets/memory.webp";
 import food from "../assets/Food-i-fy.png";
 import todolist from "../assets/To-Do-List.png";
+import HomePage from "../assets/HomePage.png";
 
 export const navLinks = [
   {
@@ -47,7 +48,7 @@ const services = [
   },
 
   {
-    title: "Problem Solver",
+    title: "Machine Learning Models",
     icon: backend,
   },
   {
@@ -169,6 +170,27 @@ const projects = [
     ],
     image: food,
     source_code_link: "https://github.com/abhishek-ox/Food-i-FY",
+  },
+  {
+    name: "Online C++ Cmpiler",
+    description:
+      "This project provides a web-based C++ execution environment, allowing users to write, compile, and execute C++ code in real-time. Built with a backend that handles file generation and execution, it offers a seamless user experience for coding enthusiasts. The frontend is designed for simplicity, enabling quick access to essential features.",
+    tags: [
+      {
+        name: "react",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "express",
+        color: "green-text-gradient",
+      },
+      {
+        name: "nodejs",
+        color: "pink-text-gradient",
+      },
+    ],
+    image: HomePage,
+    source_code_link: "https://github.com/abhishek-ox/Online-C-Compiler",
   },
   {
     name: "To Do Missions",

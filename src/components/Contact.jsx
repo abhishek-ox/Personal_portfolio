@@ -103,7 +103,9 @@ const Contact = () => {
   };
 
   return (
-    <div className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden`}>
+    <div
+      className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden`}
+    >
       <motion.div
         variants={slideIn("left", "tween", 0.2, 1)}
         className="flex-[0.75] bg-black-100 p-8 rounded-2xl"
@@ -129,7 +131,9 @@ const Contact = () => {
                 fieldErrors.name ? "border-red-500" : "border-none"
               } font-medium`}
             />
-            {fieldErrors.name && <span className="text-red-500 mt-2">This field is required</span>}
+            {fieldErrors.name && (
+              <span className="text-red-500 mt-2">This field is required</span>
+            )}
           </label>
           <label className="flex flex-col">
             <span className="text-white font-medium mb-4">Your Email</span>
@@ -144,7 +148,9 @@ const Contact = () => {
               } font-medium`}
               required
             />
-            {fieldErrors.email && <span className="text-red-500 mt-2">This field is required</span>}
+            {fieldErrors.email && (
+              <span className="text-red-500 mt-2">This field is required</span>
+            )}
           </label>
           <label className="flex flex-col">
             <span className="text-white font-medium mb-4">Your Message</span>
@@ -159,7 +165,9 @@ const Contact = () => {
               } font-medium`}
               required
             />
-            {fieldErrors.message && <span className="text-red-500 mt-2">This field is required</span>}
+            {fieldErrors.message && (
+              <span className="text-red-500 mt-2">This field is required</span>
+            )}
           </label>
 
           <div className="flex space-x-4">
@@ -181,7 +189,7 @@ const Contact = () => {
           </div>
         </form>
 
-        {alertMessage.length && (
+        {alertMessage && (
           <div className="mt-4 p-4 bg-[#350295] text-white rounded-lg">
             {alertMessage}
           </div>
@@ -200,9 +208,9 @@ const Contact = () => {
           }}
           className="w-full h-full flex justify-center items-center"
         >
-          <img 
-            src={character} 
-            alt="Your Avatar" 
+          <img
+            src={character}
+            alt="Your Avatar"
             className="h-auto rounded-full border-4 border-gray-300 shadow-lg size-5/6 animate-pulse" // Added styles for rounded corners and border
           />
         </Tilt>
